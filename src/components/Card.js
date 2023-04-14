@@ -13,8 +13,8 @@ const Card = (props) => {
 	  {props.isCompleted? <del>{props.task}</del> : <p>{props.task}</p> }
       
       <svg
-        width="22px"
-        height="22px"
+        width="24px"
+        height="24px"
         viewBox="0 0 1024 1024"
         fill="currentColor"
         style={{ cursor: "pointer" }}

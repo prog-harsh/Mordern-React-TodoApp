@@ -4,18 +4,11 @@ import InputNewTodo from "./components/InputNewTodo";
 import TodoList from "./components/TodoList";
 
 function App() {
+  const getTheme = localStorage.getItem("theme") === "true";
   const [todos, setTodos] = useState([]);
   const [newTodo, setNewTodo] = useState("");
-  const [theme, setTheme] = useState(true); // false ---> Dark & true ----> Light
+  const [theme, setTheme] = useState(getTheme); // false ---> Dark & true ----> Light
   const [window, setWindow] = useState("all");
-
-  useEffect(() => {
-    if (theme) {
-      handleLightBody();
-    } else {
-      handleDarkBody();
-    }
-  }, [theme]);
 
   useEffect(() => {
     fetchTodoList();
@@ -58,7 +51,7 @@ function App() {
         : window === "active"
         ? todos.filter((todo) => !todo.isCompleted)
         : todos.filter((todo) => todo.isCompleted);
-		return filteredTodo;
+    return filteredTodo;
   };
 
   const isCompleteHandler = (id) => {
@@ -78,10 +71,10 @@ function App() {
   };
 
   const clearComletedTodo = () => {
-	const filteredTodo = todos.filter(todo => !todo.isCompleted);
-	localStorage.setItem("todoList",JSON.stringify(filteredTodo));
-	setTodos(filteredTodo);
-  }
+    const filteredTodo = todos.filter((todo) => !todo.isCompleted);
+    localStorage.setItem("todoList", JSON.stringify(filteredTodo));
+    setTodos(filteredTodo);
+  };
 
   const fetchTodoList = () => {
     const todoList = localStorage.getItem("todoList");
@@ -89,23 +82,12 @@ function App() {
   };
 
   const togleThemeHandler = () => {
+    localStorage.setItem("theme", !theme);
     setTheme(!theme);
   };
 
-  const handleDarkBody = () => {
-    document.body.classList.remove("light");
-    document.body.classList.add("dark");
-  };
-
-  const handleLightBody = () => {
-    document.body.classList.remove("dark");
-    document.body.classList.add("light");
-  };
-
-  console.log(todos);
-
   return (
-    <div>
+    <div className={theme ? "light" : "dark"}>
       <header>
         <h2>TODO APP</h2>
         {!theme ? (
@@ -165,15 +147,17 @@ function App() {
         addTodoHandler={addTodoHandler}
         input={newTodo}
       />
-      <TodoList
-        todos={todos}
-        deleteTodo={deleteTodoHandler}
-        isCompletedHandler={isCompleteHandler}
-		todosToShow={todoWindowToShow}
-		window={window}
-		setWindow = {setWindow}
-		clearComletedTodo={clearComletedTodo}
-      />
+      {todos.length > 0 && (
+        <TodoList
+          todos={todos}
+          deleteTodo={deleteTodoHandler}
+          isCompletedHandler={isCompleteHandler}
+          todosToShow={todoWindowToShow}
+          window={window}
+          setWindow={setWindow}
+          clearComletedTodo={clearComletedTodo}
+        />
+      )}
     </div>
   );
 }
